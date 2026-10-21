@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cube Solver</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <h1>Cube Solver</h1>
+    <div class="size-toggle">
+      <button id="btn-2x2" class="size-btn active" data-size="2">2x2</button>
+      <button id="btn-3x3" class="size-btn" data-size="3">3x3</button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <div class="scene-wrap">
+      <div class="scene-container" id="scene-container">
+        <div class="scene">
+          <div class="cube-group"></div>
+        </div>
+      </div>
+      <p class="hint">Kéo để xoay góc nhìn</p>
+    </div>
+
+    <div class="panel">
+      <div class="controls">
+        <button id="btn-scramble" class="action">🔀 Xáo khối</button>
+        <button id="btn-solve" class="action primary">▶️ Giải</button>
+        <button id="btn-reset" class="action">↺ Reset</button>
+      </div>
+
+      <div class="status" id="status"></div>
+
+      <div class="moves-manual">
+        <h3>Xoay tay</h3>
+        <div id="move-buttons" class="move-grid"></div>
+      </div>
+
+      <div class="solution" id="solution-panel" hidden>
+        <h3>Lời giải (CFOP)</h3>
+        <div id="solution-steps"></div>
+        <div class="solution-controls">
+          <button id="btn-play" class="action primary">▶️ Phát lời giải</button>
+          <button id="btn-skip" class="action">⏭ Bỏ qua animation</button>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<script src="js/cube.js"></script>
+<script src="js/render.js"></script>
+<script src="js/scramble.js"></script>
+<script src="js/solverCore.js"></script>
+<script src="js/solver3x3.js"></script>
+<script src="js/solver2x2.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
