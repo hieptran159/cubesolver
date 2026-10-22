@@ -6,7 +6,7 @@
 const FACE_DIR = { U: [0, 1, 0], D: [0, -1, 0], F: [0, 0, 1], B: [0, 0, -1], R: [1, 0, 0], L: [-1, 0, 0] };
 const DIR_FACE = {};
 for (const f in FACE_DIR) DIR_FACE[FACE_DIR[f].join(',')] = f;
-const COLORS = { U: 'white', D: 'yellow', F: 'green', B: 'blue', R: 'red', L: 'orange' };
+const COLORS = { U: 'yellow', D: 'white', F: 'green', B: 'blue', R: 'red', L: 'orange' };
 
 // 90/−90/180 degree rotation of a 2D pair, right-hand-rule convention.
 function rot2(a, b, theta) {

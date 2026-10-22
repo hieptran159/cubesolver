@@ -1,14 +1,18 @@
 (function () {
-  const { Cube, inverseAlgorithm } = window.CubeEngine;
+  const { Cube, COLORS, inverseAlgorithm } = window.CubeEngine;
   const data = window.ALGORITHMS_DATA;
 
+  // 'orientation' = binary gray/yellow diagram (only whether U-color is up
+  // matters, like every OLL reference); 'full' = real colors (permutation
+  // cases, where WHICH piece is where is the point).
   const GROUPS = [
-    { key: '3x3-oll', label: '3x3 — OLL', size: 3, entries: data.threeByThree.oll, desc: `${data.threeByThree.oll.length} trường hợp định hướng tầng cuối (OLL) — đã kiểm chứng tự động bằng chính engine của trang.` },
-    { key: '3x3-pll', label: '3x3 — PLL', size: 3, entries: data.threeByThree.pll, desc: `${data.threeByThree.pll.length} thuật toán hoán vị tầng cuối (PLL) theo tên chuẩn (Aa, T, Y, Ua, Ub, H, Z, ...).` },
-    { key: '3x3-f2l', label: '3x3 — F2L', size: 3, entries: data.threeByThree.f2l, desc: `${data.threeByThree.f2l.length} trường hợp cơ bản: góc + cạnh cùng nằm ở tầng trên (U), cross và 3 cặp F2L còn lại đã xong.` },
-    { key: '2x2-oll', label: '2x2 — OLL', size: 2, entries: data.twoByTwo.orient, desc: `${data.twoByTwo.orient.length} trường hợp định hướng 4 góc tầng cuối (sau khi đã đặt xong tầng 1).` },
-    { key: '2x2-pbl', label: '2x2 — PBL', size: 2, entries: data.twoByTwo.perm, desc: `${data.twoByTwo.perm.length} trường hợp hoán vị 4 góc tầng cuối (các góc đã định hướng đúng).` },
+    { key: '3x3-oll', label: '3x3 — OLL', size: 3, mode: 'orientation', entries: data.threeByThree.oll, desc: `${data.threeByThree.oll.length} trường hợp định hướng tầng cuối (OLL) — đã kiểm chứng tự động bằng chính engine của trang.` },
+    { key: '3x3-pll', label: '3x3 — PLL', size: 3, mode: 'full', entries: data.threeByThree.pll, desc: `${data.threeByThree.pll.length} thuật toán hoán vị tầng cuối (PLL) theo tên chuẩn (Aa, T, Y, Ua, Ub, H, Z, ...).` },
+    { key: '3x3-f2l', label: '3x3 — F2L', size: 3, mode: 'full', entries: data.threeByThree.f2l, desc: `${data.threeByThree.f2l.length} trường hợp cơ bản: góc + cạnh cùng nằm ở tầng trên (U), cross và 3 cặp F2L còn lại đã xong.` },
+    { key: '2x2-oll', label: '2x2 — OLL', size: 2, mode: 'orientation', entries: data.twoByTwo.orient, desc: `${data.twoByTwo.orient.length} trường hợp định hướng 4 góc tầng cuối (sau khi đã đặt xong tầng 1).` },
+    { key: '2x2-pbl', label: '2x2 — PBL', size: 2, mode: 'full', entries: data.twoByTwo.perm, desc: `${data.twoByTwo.perm.length} trường hợp hoán vị 4 góc tầng cuối (các góc đã định hướng đúng).` },
   ];
+  const GRAY = '#3a3e4a';
 
   const CORNER_POS = [[-1, -1], [1, -1], [-1, 1], [1, 1]]; // (x,z): UBL,UBR,UFL,UFR
   const EDGE_POS = [[0, -1], [-1, 0], [1, 0], [0, 1]]; // UB,UL,UR,UF
@@ -24,19 +28,29 @@
     return c;
   }
 
-  function faceColor(piece, face) { return piece.colors[face] || null; }
-
-  function buildCell(piece) {
+  // 'orientation' mode: just gray/yellow, like every standard OLL chart —
+  // only whether the U-color sticker faces up matters, not which piece it is.
+  function buildCellOrientation(piece) {
     const cell = document.createElement('div');
     cell.className = 'diagram-cell';
-    cell.style.background = piece.colors.U || '#3a3e4a';
-    const ACCENT = { F: { side: 'bottom' }, B: { side: 'top' }, L: { side: 'left' }, R: { side: 'right' } };
+    cell.style.background = piece.colors.U === COLORS.U ? COLORS.U : GRAY;
+    return cell;
+  }
+
+  // 'full' mode: real colors — background is whatever's actually facing up,
+  // plus small accent bars for the side-facing colors, so permutation (which
+  // piece ended up where) is visible even though orientation is already solved.
+  function buildCellFull(piece) {
+    const cell = document.createElement('div');
+    cell.className = 'diagram-cell';
+    cell.style.background = piece.colors.U || GRAY;
+    const ACCENT = { F: 'bottom', B: 'top', L: 'left', R: 'right' };
     for (const face of ['F', 'B', 'L', 'R']) {
       const color = piece.colors[face];
       if (!color) continue;
       const bar = document.createElement('div');
       bar.className = 'accent';
-      const side = ACCENT[face].side;
+      const side = ACCENT[face];
       const thick = '5px';
       Object.assign(bar.style, {
         position: 'absolute', background: color,
@@ -52,8 +66,9 @@
     return cell;
   }
 
-  function renderDiagram(entry, size) {
+  function renderDiagram(entry, size, mode) {
     const cube = beforeState(entry, size);
+    const buildCell = mode === 'orientation' ? buildCellOrientation : buildCellFull;
     const wrap = document.createElement('div');
     wrap.className = 'diagram';
     const grid = document.createElement('div');
@@ -75,10 +90,10 @@
     return wrap;
   }
 
-  function renderCard(entry, size) {
+  function renderCard(entry, size, mode) {
     const card = document.createElement('div');
     card.className = 'case-card';
-    card.appendChild(renderDiagram(entry, size));
+    card.appendChild(renderDiagram(entry, size, mode));
     const name = document.createElement('div');
     name.className = 'case-name';
     name.textContent = entry.name;
@@ -114,7 +129,7 @@
     section.appendChild(desc);
     const grid = document.createElement('div');
     grid.className = 'case-grid';
-    for (const entry of g.entries) grid.appendChild(renderCard(entry, g.size));
+    for (const entry of g.entries) grid.appendChild(renderCard(entry, g.size, g.mode));
     section.appendChild(grid);
     sectionsEl.appendChild(section);
   });
