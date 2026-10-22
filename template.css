@@ -1,0 +1,53 @@
+.top-nav a { color: #9fd3ff; text-decoration: none; font-size: 0.9rem; }
+.top-nav a:hover { text-decoration: underline; }
+
+.tabs {
+  display: flex; gap: 8px; flex-wrap: wrap;
+  padding: 14px 20px 0; max-width: 1100px; margin: 0 auto; width: 100%;
+  box-sizing: border-box;
+}
+.tab-btn {
+  padding: 8px 16px; border-radius: 8px 8px 0 0; border: 1px solid #333; border-bottom: none;
+  background: #22252e; color: #ccc; cursor: pointer; font-size: 0.9rem;
+}
+.tab-btn.active { background: #2b2e38; color: #fff; border-color: #4a7dff; }
+
+.template-main {
+  max-width: 1100px; margin: 0 auto; width: 100%;
+  padding: 0 20px 40px;
+  box-sizing: border-box;
+}
+.section { display: none; background: #2b2e38; border: 1px solid #333; border-radius: 0 8px 8px 8px; padding: 18px; }
+.section.active { display: block; }
+.section-desc { color: #999; font-size: 0.85rem; margin: 0 0 16px; }
+
+.case-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+  gap: 14px;
+}
+.case-card {
+  background: #22252e; border: 1px solid #383c48; border-radius: 8px;
+  padding: 10px; display: flex; flex-direction: column; align-items: center; gap: 8px;
+}
+.case-name { font-size: 0.85rem; font-weight: 600; color: #e6e6e6; text-align: center; }
+.case-alg {
+  font-family: monospace; font-size: 0.78rem; color: #9fd3ff; text-align: center;
+  word-break: break-word; line-height: 1.4;
+}
+
+.diagram { display: inline-block; }
+.diagram-grid {
+  display: grid; gap: 2px;
+  background: #11131a;
+  padding: 3px; border-radius: 4px;
+}
+.diagram-cell {
+  position: relative;
+  width: 26px; height: 26px;
+  border-radius: 2px;
+  background: #3a3e4a;
+}
+.diagram-cell .accent {
+  position: absolute; width: 0; height: 0;
+}
